@@ -1,0 +1,3 @@
+Time,Interval(min),LoggerPosition,Rodent1ID,Rodent1Species,Rodent1Sex,Rodent2ID,Rodent2Species,Rodent2Sex,ContactType
+2024-10-08 02:09:30,4.0,T11,EW114,AS,M,EW128,AS,M,Within species
+2024-10-18 05:37:18,0.0,T11,EW114,AS,M,EW206,AS,F,Within species

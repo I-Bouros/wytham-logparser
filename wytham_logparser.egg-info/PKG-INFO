@@ -1,0 +1,26 @@
+Metadata-Version: 2.4
+Name: wytham-logparser
+Version: 0.0.1
+Summary: This is a one-week project in which we are using branching processes to estimate the time-dependent reproduction number of a disease.
+Home-page: https://github.com/I-Bouros/whytham-logparser.git
+Maintainer: 
+Maintainer-email: 
+License: BSD 3-Clause "New" or "Revised" License
+Requires-Python: >=3.9
+Requires-Dist: numpy
+Requires-Dist: pandas
+Provides-Extra: docs
+Requires-Dist: sphinx!=1.7.3,>=1.5; extra == "docs"
+Requires-Dist: alabaster; extra == "docs"
+Provides-Extra: dev
+Requires-Dist: flake8>=3; extra == "dev"
+Dynamic: description
+Dynamic: home-page
+Dynamic: license
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# whytham-logparser
+Package for processing logger data files for the Whytham Woods rodent project.
