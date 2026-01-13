@@ -23,7 +23,7 @@ This folder contains the two python scipt to process the trigger (triggers.py) a
 ***
 One way to install the module is to download the repositiory to your machine of choice and type the following commands in the terminal. 
 ```bash
-git clone https://github.com/I-Bouros/whytham-logparser.git
+git clone https://github.com/I-Bouros/wytham-logparser.git
 cd ../path/to/the/file
 ```
 
