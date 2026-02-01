@@ -54,7 +54,8 @@ def read_full_logger_data(log_file: str):
 def process_logger_data(
         data: pd.DataFrame,
         tag_data: pd.DataFrame,
-        trap_data: pd.DataFrame):
+        trap_data: pd.DataFrame,
+        different_tag_list: list):
     """
     Computes the daily total rainfall between the given dates.
 
@@ -68,6 +69,8 @@ def process_logger_data(
     trap_data : pandas.Dataframe
         Dataframe of the position on the grid of an given trap on any
         given day.
+    different_tag_list : list
+        List of known tags that are not part of the project.
 
     Returns
     -------
@@ -95,18 +98,24 @@ def process_logger_data(
         # time entry
         daily_data = data[data['Time'] == t]
 
-        # Identify the logger position of the trigger,
-        # the rodent ID triggering the trap, its sex and species...
-        newrow = pd.DataFrame([{
-            'time': t,
-            'LoggerPosition': find_trap_pos(trap_data, daily_data),
-            'RodentID': find_rodent_id(tag_data, daily_data)[0],
-            'RodentSpecies': find_rodent_id(tag_data, daily_data)[1],
-            'RodentSex': find_rodent_id(tag_data, daily_data)[2]
-        }])
-        # and save the details as a new entry in the empty trigger
-        # dataframe we created above
-        triggers = pd.concat([triggers, newrow])
+        # If there are no error signals ...
+        if find_rodent_id(tag_data, daily_data,
+                          different_tag_list) != 'error':
+            # ... identify the logger position of the trigger,
+            # the rodent ID triggering the trap, its sex and species...
+            newrow = pd.DataFrame([{
+                'time': t,
+                'LoggerPosition': find_trap_pos(trap_data, daily_data),
+                'RodentID': find_rodent_id(tag_data, daily_data,
+                                           different_tag_list)[0],
+                'RodentSpecies': find_rodent_id(tag_data, daily_data,
+                                                different_tag_list)[1],
+                'RodentSex': find_rodent_id(tag_data, daily_data,
+                                            different_tag_list)[2]
+            }])
+            # and save the details as a new entry in the empty trigger
+            # dataframe we created above
+            triggers = pd.concat([triggers, newrow])
 
     # Finally reshape the time entries into a readable format
     triggers['Time'] = [
@@ -184,7 +193,8 @@ def find_trap_pos(trap_data: pd.DataFrame,
 
 
 def find_rodent_id(tag_data: pd.DataFrame,
-                   daily_data: pd.DataFrame):
+                   daily_data: pd.DataFrame,
+                   different_tag_list: list):
     """
     Identifies the rodent based on the tag ID.
 
@@ -195,6 +205,8 @@ def find_rodent_id(tag_data: pd.DataFrame,
     daily_data : pandas.Dataframe
         Dataframe of the recognised tag reading trigger event for a
         given timepoint.
+    different_tag_list : list
+        List of known tags that are not part of the project.
 
     Returns
     -------
@@ -214,6 +226,12 @@ def find_rodent_id(tag_data: pd.DataFrame,
     elif daily_data['TagID'].values[0][-6:] in tag_data['Tag4'].values:
         rodent = tag_data[
             (tag_data['Tag4'] == daily_data['TagID'].values[0][-6:])]
+    # If the tag is among the non-recongnised list, the code throws an error
+    elif daily_data['TagID'].values[0][-6:] in different_tag_list:
+        return 'error'
+
+    # This will print the current Tag ID from the logger data
+    print(daily_data['TagID'])
 
     return (rodent['Animal'].values[0], rodent['Species'].values[0],
             rodent['Sex'].values[0])
@@ -249,6 +267,12 @@ def main(list_log_file: list):
                      '../logger-data/EWYT_Project_Logger_Movements.csv'),
         header=0)
 
+    # Read list of known tags not part of the project
+    different_tag_list = pd.read_csv(os.path.join(
+            os.path.dirname(__file__),
+            '../logger-data/DifferentTags.txt'),
+            header=None).values.tolist()[0]
+
     # For each logger data file ...
     for log_file in list_log_file:
         # ... we read in the file
@@ -264,7 +288,8 @@ def main(list_log_file: list):
         contact_data = contact_data[['date', 'LoggerID', 'TagID']]
 
         # Process logger data to produce all recognised triggers dataframe
-        triggers = process_logger_data(contact_data, all_tags, trap_position)
+        triggers = process_logger_data(contact_data, all_tags, trap_position,
+                                       different_tag_list)
 
         # Keep only columns of interest
         triggers = triggers[['Time', 'LoggerPosition', 'RodentID',

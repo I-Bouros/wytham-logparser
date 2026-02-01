@@ -248,4 +248,4 @@ def main(max_contact_time: float | int = 5):
 
 
 if __name__ == '__main__':
-    main(max_contact_time=5)
+    main(max_contact_time=720)

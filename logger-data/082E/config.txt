@@ -1,0 +1,153 @@
+###### CONFIG FILE FOR SMART TRAP AND SPATIAL LOGGERS ######
+
+# NOTE THAT ALL COMMENTS SHOULD BE PRECEDED BY A #
+
+# BLANK LINES ARE IGNORED
+
+# WARNING ##  DO NOT USE THE EQUALS SIGN IN NOTES ##########
+
+# ENTER THE VARIABLE NAME, THEN THE EQUALS SIGN, THEN THE VALUE AND
+# DO NOT USE SPACES AROUND THE EQUALS SIGN
+
+# THERE ARE NO BLANK SPACES IN VARIABLE NAMES
+
+# Designed and coded by Dr Curt Lamberth, Oxford University Zoology Department
+# NC3Rs project led by Dr Sarah Knowles, Oxford University
+# Collaboration with Prof. Tim Coulson, Oxford University
+
+##### NOTES #####
+#
+# Add notes here if necessary
+#
+#
+#
+##################### NOTES ######################
+# 0800 is the test ID
+# **** LOGGER_ID Must be unique ****
+
+# ----------  IMPORTANT VARIABLES  --------------
+LOGGER_ID=082E
+WIRELESS_ID=082E
+SD_CARD_LABEL=082E
+DATA_FILE_NAME=DATA-082E.txt
+
+LOGGER_TYPE=1
+
+# Timed start and stop, integer.
+# TIMED=1 for timed start and stop
+# 24 hour clock hour start time, must be > HOUR_STOP
+# 24 hour clock hour stop time, must be < HOUR_START
+# IMA continues to opearte during inactive period
+TIMED=0
+HOUR_START=18
+HOUR_STOP=7
+
+# For information only
+DATE_FORMAT=DD/MM/YY HH:MM:SS
+
+# I am alive in IMA_TIME_UNITs
+# IMA continues to opearte during timed-on period if active
+IMA_TIME=4
+IMA_TIME_UNIT=HOURS
+
+# Set TRIGGER_ON_TIME to be the number of seconds that the unit will activate
+# if PIR1 is triggered.  If there is another PIR1 then the time on is extended
+# by another TRIGGER_ON_TIME.  The TRIGGER_ON_TIME must be shorter than the timeout.
+# Not that Loop_Timeout_seconds need to be added as a config in here.
+TRIGGER_ON_TIME=15
+
+MIN_OP_TEMPERATURE_C=-18
+MAX_OP_TEMPERATURE_C=60
+
+# 11.1V Li-ION batteries assume 3.7V operating and max charge is 4.2V/cell or 12.6V
+# In-service voltage varied from 12.6V to 7.5V (software cutoff)
+# Absolute minimum voltage per cell is 2.4V (7.2V for 3 cells)
+# % battery as follows with voltages
+# 12.5V 100%
+# 12.0V  50%
+# 11.1V  25%	BATTERY_WARN1_V
+# 10.3V  10%	BATTERY_WARN2_V
+# 10.0V		Wake from hibernation (0.5V above BATTERY_CRITICAL_V)
+# 9.7V    5%	Battery might fail to deliver the start-up current for the RFID reader
+# 9.5V    2%	BATTERY_CRITICAL_V Battery starts to fail, will wake up if above this for recharge (2 months life before battery damage) 
+# 9.1V    1%	MIN_OP_VOLTAGE_V Battery will fail very soon, hibernate now
+# 8.25V   0%    SHUTDOWN_VOLTAGE Battery should now be recharged (2.75V per cell) - battery likely to be damaged
+
+BATTERY_V_LiION_3C=11.1
+BATTERY_V_LiION_1C=3.7
+BATTERY_WARN1_V=11.0
+BATTERY_WARN2_V=10.0
+BATTERY_CRITICAL_V=9.5
+MIN_OP_VOLTAGE_V=9.1
+SHUTDOWN_VOLTAGE=8.25
+
+# ADC interfaces are used for the on-board LMT86 sensor and two spare channels
+# are provided via ADC1-AMP1 JP14 and ADC-AMP2 JP15
+# Each ADC has a reference voltage which is equivalent to 4096 raw ADC counts
+# The voltage reference source can be changed in firmware via AD1CON1
+# LMT86 uses 2.048V reference
+# ADC1-AMP1 and ADC1-AMP2 both use the 2.048V reference
+
+# Temperature calibrated using y equals mx + c against a standard
+# Applies to the on-board LMT86 sensor.  This sensor can be removed
+# from the board and attached externally via JP19
+TEMPERATURE_CALIB_m=0.66306
+TEMPERATURE_CALIB_c=2103
+TEMPERATURE_CALIB_d=-10.9
+
+# Activate a second LMT86 sensor connected to ADC1-AMP1 JP14
+# Temperature reported instead of ADC units
+SECONDARY_LMT86_JP15=0
+
+# If set then all the debug lines are sent via RS232 serial as well.  Used for testing.
+DEBUG=0
+
+# PIR sensor activation.
+# Connectors PIR1 and PIR2 are marked on the board with polarity indication by a small '1'.
+# The direction value Pdir, 0 only PIR1 active, 1 PIR1 then PIR2 and 2 PIR2 then PIR1
+# Set to activate, clear to deactivate
+PIR1=1
+PIR2=1
+
+# I2C interface JP13 and JP18 can be used for a variety of sensors
+# firmware routines need to be added
+# HDC1010 measures relative humidity and temperature
+# SHT20 measures relative humidity and temperature
+HDC1010_SENSOR=0
+SHT20_SENSOR=0
+
+# Wireless commands.  Wakeup character is specific to the wireless board
+# The Radiocrafts TM moduels use 0xFF (255) before each packet after wakeup from sleep
+# Enter as a decimal number
+WIRELESS_WAKE_CHAR=255
+
+# Wireless on time is the time the wireless normally stays on after being triggered from sleep and without re-triggering.
+# For loggers this is 15 seconds.
+WIRELESS_ON_TIME_s=15
+
+# Older boards: BATTERY_V_CALIB to be 0.00659 for the 12V input.
+# Newer boards v2.2: BATTERY_V_CALIB should be 0.00631 for the 12V input.
+# Lower load 12V systems might need to use 0.00716 as the v drop over the diodes will be less.
+# Newer boards v2.2 FOR smart trap and weather stations using the 3.3V input: BATTERY_V_CALIB should be 0.005.
+BATTERY_V_CALIB=0.006306831
+
+# Delay between lines used during debug and testing
+POST_WIRELESS_LINE_DELAY_ms=1500
+
+# Radiocrafts modules send 120 characters per packet. Longer data sentences require more packets.
+# but more efficient if packet takes up a good percentage of payload
+WIRELESS_LINE_LENGTH_MAX=120
+
+# Time taken to power up the RFID in ms.
+RFID_POWER_UP_DELAY=500
+
+# RFID reader type
+# 0 default is 12V RS232 TTL 9600bd Fredstore Type
+# 1 SonMicro module 3.0V RS232 TTL 19200bd
+RFID_reader=0
+
+# For experimental video use only.
+# Keeps RFID reader and logger/trap on all the time for testing (1 is always on)
+RFID_READER_ALWAYS_ON=0
+
+# END OF FILE
